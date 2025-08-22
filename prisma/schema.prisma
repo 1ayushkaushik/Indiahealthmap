@@ -1,0 +1,29 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Disease {
+  id         Int        @id @default(autoincrement())
+  name       String     @unique
+  totalCases Int        @default(0)
+  totalDeaths Int       @default(0)
+  data       DiseaseData[]
+}
+
+model DiseaseData {
+  id           Int      @id @default(autoincrement())
+  disease      Disease  @relation(fields: [diseaseId], references: [id])
+  diseaseId    Int
+  stateName    String
+  districtName String
+  date         DateTime
+  cases        Int      @default(0)
+  deaths       Int      @default(0)
+
+  @@unique([diseaseId, stateName, districtName, date])
+}
